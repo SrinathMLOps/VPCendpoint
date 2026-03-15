@@ -1,4 +1,4 @@
-name: Terraform Destroy
+name: VPC Endpoint - Destroy Infrastructure
 
 on:
   workflow_dispatch:
@@ -43,11 +43,11 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: eu-west-2
+        AWS_REGION: ap-south-1
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: eu-west-2
+        AWS_REGION: ap-south-1
