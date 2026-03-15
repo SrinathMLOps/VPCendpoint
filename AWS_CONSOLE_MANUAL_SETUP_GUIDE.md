@@ -11,6 +11,7 @@ Complete step-by-step guide to create VPC Endpoint infrastructure manually using
 ## 📋 What You'll Create
 
 By the end of this guide, you'll have:
+
 - 1 VPC with public and private subnets
 - 2 EC2 instances (public bastion and private server)
 - 1 S3 bucket with sample file
@@ -51,7 +52,7 @@ S3 Bucket
 
 ### Step 1: Create VPC
 
-1. Log in to **AWS Console**: https://console.aws.amazon.com
+1. Log in to **AWS Console**: <https://console.aws.amazon.com>
 2. Search for **VPC** in the top search bar
 3. Click **VPC** service
 4. In the left sidebar, click **Your VPCs**
@@ -65,7 +66,7 @@ S3 Bucket
 - **Tenancy:** Default
 - **Tags:** Leave as is
 
-6. Click **Create VPC**
+1. Click **Create VPC**
 
 **Expected Result:** ✅ VPC created with ID like `vpc-0123456789abcdef`
 
@@ -92,12 +93,13 @@ S3 Bucket
 2. Click **Create subnet**
 
 **Configure Subnet:**
+
 - **VPC ID:** Select `myvpc1` (your VPC)
 - **Subnet name:** `public-subnet`
 - **Availability Zone:** Choose first one (e.g., eu-west-2a)
 - **IPv4 CIDR block:** `10.0.0.0/24`
 
-3. Click **Create subnet**
+1. Click **Create subnet**
 
 **Expected Result:** ✅ Public subnet created
 
@@ -119,12 +121,13 @@ S3 Bucket
 1. Click **Create subnet** again
 
 **Configure Subnet:**
+
 - **VPC ID:** Select `myvpc1`
 - **Subnet name:** `private-subnet`
 - **Availability Zone:** Same as public subnet (e.g., eu-west-2a)
 - **IPv4 CIDR block:** `10.0.1.0/24`
 
-2. Click **Create subnet**
+1. Click **Create subnet**
 
 **Expected Result:** ✅ Private subnet created (no auto-assign public IP)
 
@@ -138,9 +141,10 @@ S3 Bucket
 2. Click **Create internet gateway**
 
 **Configure:**
+
 - **Name tag:** `myvpc1-igw`
 
-3. Click **Create internet gateway**
+1. Click **Create internet gateway**
 
 **Expected Result:** ✅ IGW created but shows "Detached"
 
@@ -163,10 +167,11 @@ S3 Bucket
 2. Click **Create route table**
 
 **Configure:**
+
 - **Name:** `public-route-table`
 - **VPC:** Select `myvpc1`
 
-3. Click **Create route table**
+1. Click **Create route table**
 
 ---
 
@@ -178,10 +183,11 @@ S3 Bucket
 4. Click **Add route**
 
 **Configure Route:**
+
 - **Destination:** `0.0.0.0/0`
 - **Target:** Internet Gateway → Select `myvpc1-igw`
 
-5. Click **Save changes**
+1. Click **Save changes**
 
 **Expected Result:** ✅ Route to internet added
 
@@ -204,10 +210,11 @@ S3 Bucket
 1. Click **Create route table**
 
 **Configure:**
+
 - **Name:** `private-route-table`
 - **VPC:** Select `myvpc1`
 
-2. Click **Create route table**
+1. Click **Create route table**
 
 **Note:** Don't add internet route - this keeps it private!
 
@@ -233,6 +240,7 @@ S3 Bucket
 2. Click **Create security group**
 
 **Configure:**
+
 - **Security group name:** `public-server-sg`
 - **Description:** `Security group for public EC2 instance`
 - **VPC:** Select `myvpc1`
@@ -246,9 +254,10 @@ S3 Bucket
   - **Description:** SSH from anywhere
 
 **Outbound rules:**
+
 - Leave default (All traffic to 0.0.0.0/0)
 
-3. Click **Create security group**
+1. Click **Create security group**
 
 📝 **Note down the Security Group ID** (e.g., sg-0123456789abcdef)
 
@@ -259,6 +268,7 @@ S3 Bucket
 1. Click **Create security group**
 
 **Configure:**
+
 - **Security group name:** `private-server-sg`
 - **Description:** `Security group for private EC2 instance`
 - **VPC:** Select `myvpc1`
@@ -272,9 +282,10 @@ S3 Bucket
   - **Description:** SSH from public subnet
 
 **Outbound rules:**
+
 - Leave default (All traffic to 0.0.0.0/0)
 
-2. Click **Create security group**
+1. Click **Create security group**
 
 **Why?** Private server only accepts SSH from public server.
 
@@ -289,17 +300,20 @@ S3 Bucket
 3. In left sidebar, click **Roles**
 4. Click **Create role**
 
-**Step 1: Select trusted entity**
+#### Step 1: Select trusted entity
+
 - **Trusted entity type:** AWS service
 - **Use case:** EC2
 - Click **Next**
 
-**Step 2: Add permissions**
+#### Step 2: Add permissions
+
 - Search for: `AmazonS3FullAccess`
 - Check ✅ `AmazonS3FullAccess`
 - Click **Next**
 
-**Step 3: Name, review, and create**
+#### Step 3: Name, review, and create
+
 - **Role name:** `ec2-s3-access-role`
 - **Description:** `Allows EC2 instances to access S3`
 - Click **Create role**
@@ -319,6 +333,7 @@ S3 Bucket
 3. Click **Create bucket**
 
 **Configure:**
+
 - **Bucket name:** `your-unique-name-vpc-endpoint-2026` (must be globally unique!)
 - **AWS Region:** Same as your VPC (e.g., eu-west-2)
 - **Block Public Access:** Keep all checked (default)
@@ -326,7 +341,7 @@ S3 Bucket
 - **Tags:** Optional
 - **Default encryption:** Enable (default)
 
-4. Click **Create bucket**
+1. Click **Create bucket**
 
 **Expected Result:** ✅ S3 bucket created
 
@@ -340,7 +355,8 @@ S3 Bucket
 2. Click **Upload**
 3. Click **Add files**
 4. Create a text file on your computer named `sample-file.txt` with content:
-   ```
+
+   ```text
    This is a sample file accessed via VPC Endpoint!
    ```
 5. Select the file and upload
@@ -359,18 +375,19 @@ S3 Bucket
 3. Click **Create endpoint**
 
 **Configure:**
+
 - **Name tag:** `s3-vpc-endpoint`
 - **Service category:** AWS services
-- **Services:** 
+- **Services:**
   - Search for: `s3`
   - Select: `com.amazonaws.eu-west-2.s3` (Gateway type)
 - **VPC:** Select `myvpc1`
-- **Route tables:** 
+- **Route tables:**
   - Check ✅ `public-route-table`
   - Check ✅ `private-route-table`
 - **Policy:** Full access (default)
 
-4. Click **Create endpoint**
+1. Click **Create endpoint**
 
 **Expected Result:** ✅ VPC Endpoint created with status "Available"
 
@@ -391,6 +408,7 @@ S3 Bucket
 **Configure:**
 
 **Name and tags:**
+
 - **Name:** `public-server`
 
 **Application and OS Images (AMI):**
@@ -399,13 +417,16 @@ S3 Bucket
 - **Architecture:** 64-bit (x86)
 
 **Instance type:**
+
 - **Instance type:** t3.micro (free tier eligible)
 
 **Key pair:**
+
 - **Key pair name:** Select your existing key pair (or create new)
 - 📝 **Remember your key pair name!**
 
 **Network settings:**
+
 - Click **Edit**
 - **VPC:** Select `myvpc1`
 - **Subnet:** Select `public-subnet`
@@ -414,16 +435,18 @@ S3 Bucket
   - Select `public-server-sg`
 
 **Advanced details:**
+
 - Scroll down to **IAM instance profile**
 - Select `ec2-s3-access-role`
 - **User data:** (optional, paste this to auto-install AWS CLI)
+
   ```bash
   #!/bin/bash
   yum update -y
   yum install -y aws-cli
   ```
 
-4. Click **Launch instance**
+1. Click **Launch instance**
 
 **Expected Result:** ✅ Public EC2 instance launching
 
@@ -438,20 +461,25 @@ S3 Bucket
 **Configure:**
 
 **Name and tags:**
+
 - **Name:** `private-server`
 
 **Application and OS Images (AMI):**
+
 - **Quick Start:** Amazon Linux
 - **Amazon Machine Image (AMI):** Amazon Linux 2023 AMI
 - **Architecture:** 64-bit (x86)
 
 **Instance type:**
+
 - **Instance type:** t3.micro
 
 **Key pair:**
+
 - **Key pair name:** Same as public server
 
 **Network settings:**
+
 - Click **Edit**
 - **VPC:** Select `myvpc1`
 - **Subnet:** Select `private-subnet`
@@ -460,15 +488,17 @@ S3 Bucket
   - Select `private-server-sg`
 
 **Advanced details:**
+
 - **IAM instance profile:** Select `ec2-s3-access-role`
 - **User data:**
+
   ```bash
   #!/bin/bash
   yum update -y
   yum install -y aws-cli
   ```
 
-2. Click **Launch instance**
+1. Click **Launch instance**
 
 **Expected Result:** ✅ Private EC2 instance launching (no public IP)
 
@@ -493,15 +523,18 @@ S3 Bucket
 2. Note the **Public IPv4 address** (e.g., 35.178.235.246)
 3. Open your terminal/PowerShell
 4. Run:
+
    ```bash
    ssh -i your-key.pem ec2-user@<PUBLIC_IP>
    ```
 
 Replace:
+
 - `your-key.pem` with your key file
 - `<PUBLIC_IP>` with actual public IP
 
 **If permission error:**
+
 ```bash
 chmod 400 your-key.pem
 ```
@@ -563,10 +596,11 @@ scp -i your-key.pem your-key.pem ec2-user@<PUBLIC_IP>:~/
 1. Note the private IP of private server from EC2 Console (e.g., 10.0.1.245)
 
 2. On public server, run:
+
    ```bash
    # Set correct permissions
    chmod 600 your-key.pem
-   
+
    # Connect to private server
    ssh -i your-key.pem ec2-user@<PRIVATE_IP>
    ```
@@ -629,9 +663,10 @@ cat sample-file.txt
 
 ---
 
-## 🎉 SUCCESS!
+## 🎉 SUCCESS
 
 **You just proved that:**
+
 1. ❌ Private server has NO internet access
 2. ✅ Private server CAN access S3 via VPC Endpoint
 3. ✅ All traffic stays within AWS network (secure and fast!)
@@ -784,7 +819,7 @@ This is exactly what VPC Endpoints are designed for!
 ### What You Created (18 Resources)
 
 | Resource | Name | Purpose |
-|----------|------|---------|
+| -------- | ---- | ------- |
 | VPC | myvpc1 | Main network (10.0.0.0/16) |
 | Public Subnet | public-subnet | Internet-accessible (10.0.0.0/24) |
 | Private Subnet | private-subnet | Isolated (10.0.1.0/24) |
@@ -804,7 +839,7 @@ This is exactly what VPC Endpoints are designed for!
 ## 💰 Cost Breakdown
 
 | Resource | Cost |
-|----------|------|
+| -------- | ---- |
 | VPC, Subnets, IGW, Route Tables | Free |
 | Security Groups | Free |
 | VPC Endpoint (Gateway) | Free |
@@ -818,13 +853,16 @@ This is exactly what VPC Endpoints are designed for!
 ## 🔍 Comparison: Manual vs Terraform
 
 ### Manual (AWS Console)
+
 **Pros:**
+
 - ✅ Visual interface - see what you're creating
 - ✅ Great for learning and understanding
 - ✅ No code required
 - ✅ Immediate feedback
 
 **Cons:**
+
 - ❌ Time-consuming (60-90 minutes)
 - ❌ Error-prone (easy to miss steps)
 - ❌ Hard to replicate
@@ -832,7 +870,9 @@ This is exactly what VPC Endpoints are designed for!
 - ❌ Manual cleanup required
 
 ### Terraform (Infrastructure as Code)
+
 **Pros:**
+
 - ✅ Fast deployment (3-5 minutes)
 - ✅ Repeatable and consistent
 - ✅ Version controlled
@@ -840,6 +880,7 @@ This is exactly what VPC Endpoints are designed for!
 - ✅ Can be automated
 
 **Cons:**
+
 - ❌ Requires learning Terraform syntax
 - ❌ Less visual feedback
 - ❌ Debugging can be harder
@@ -866,23 +907,27 @@ This is exactly what VPC Endpoints are designed for!
 ## 🔧 Troubleshooting
 
 ### Cannot SSH to public server
+
 - Check security group allows SSH from your IP
 - Verify instance is running
 - Check public IP is assigned
 - Verify key permissions: `chmod 400 key.pem`
 
 ### Cannot SSH from public to private
+
 - Check private security group allows SSH from public SG
 - Verify key is copied to public server
 - Check private IP is correct
 
 ### Cannot access S3 from private server
+
 - Verify IAM role is attached to instance
 - Check VPC Endpoint is created and available
 - Verify route tables include VPC Endpoint routes
 - Wait 2-3 minutes for IAM role to propagate
 
 ### Private server can access internet
+
 - Check subnet is associated with private route table
 - Verify private route table has NO route to IGW
 - Check there's no NAT Gateway in the route table
