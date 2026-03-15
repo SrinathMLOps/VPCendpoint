@@ -1,13 +1,14 @@
+# Variables for VPC S3 Endpoint Setup
+
 variable "aws_region" {
-  description = "AWS region"
+  description = "AWS region to deploy resources"
   type        = string
-  default     = "ap-south-1"
+  default     = "eu-west-2"
 }
 
 variable "ami_id" {
-  description = "AMI ID for EC2 (Amazon Linux 2023 in ap-south-1)"
+  description = "AMI ID for EC2 instances (Amazon Linux 2023)"
   type        = string
-  default     = "ami-0c2af51e265bd5e0e"
 }
 
 variable "instance_type" {
@@ -17,18 +18,11 @@ variable "instance_type" {
 }
 
 variable "key_name" {
-  description = "AWS key pair name (must exist in your AWS account)"
+  description = "Name of the SSH key pair"
   type        = string
 }
 
-variable "instance_name" {
-  description = "Name tag for EC2 instance"
+variable "s3_bucket_name" {
+  description = "Name of the S3 bucket (must be globally unique)"
   type        = string
-  default     = "Production-Web-Server"
-}
-
-variable "environment" {
-  description = "Deployment environment"
-  type        = string
-  default     = "dev"
 }
